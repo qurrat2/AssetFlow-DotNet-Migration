@@ -1,0 +1,39 @@
+```
+# .NET
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.vs/
+.vscode/
+
+# Test results & coverage
+TestResults/
+coverage/
+*.trx
+
+# Local secrets
+appsettings.Development.json
+appsettings.*.Local.json
+secrets.json
+*.pfx
+
+# Tool caches
+.dotnet/
+.nuget/
+packages/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+/2026-04-27-assetflow-migration-demo.md
+```
+/2026-04-27-assetflow-migration-demo.md
