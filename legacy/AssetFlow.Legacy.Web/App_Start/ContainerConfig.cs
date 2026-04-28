@@ -16,11 +16,11 @@ public static class ContainerConfig
         var builder = new ContainerBuilder();
 
         var connStr = ConfigurationManager.ConnectionStrings["Default"].ConnectionString;
-        builder.Register(_ => new SqlAssetRepository(connStr)).As<IAssetRepository>().InstancePerRequest();
-        builder.Register(_ => new SqlUserRepository(connStr)).As<IUserRepository>().InstancePerRequest();
-        builder.Register(_ => new SqlAssignmentRepository(connStr)).As<IAssignmentRepository>().InstancePerRequest();
+        builder.Register(_ => new SqlAssetRepository(connStr)).As<IAssetRepository>().InstancePerDependency();
+        builder.Register(_ => new SqlUserRepository(connStr)).As<IUserRepository>().InstancePerDependency();
+        builder.Register(_ => new SqlAssignmentRepository(connStr)).As<IAssignmentRepository>().InstancePerDependency();
 
-        builder.RegisterType<AssetService>().As<IAssetService>().InstancePerRequest();
+        builder.RegisterType<AssetService>().As<IAssetService>().InstancePerDependency();
 
         builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
 

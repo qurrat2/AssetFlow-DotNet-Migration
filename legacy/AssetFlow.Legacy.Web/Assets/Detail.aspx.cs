@@ -10,7 +10,9 @@ public partial class Detail : Page
 {
     protected async void Page_Load(object sender, EventArgs e)
     {
-        if (!int.TryParse(Request.QueryString["id"], out var id)) return;
+        var idStr = (string)Page.RouteData.Values["id"] ?? Request.QueryString["id"];
+        if (!int.TryParse(idStr, out var id)) return;
+
         var repo = WebFormsContainer.Resolve<IAssetRepository>();
         var asset = await repo.GetByIdAsync(id);
         if (asset == null) { LitTag.Text = "(not found)"; return; }

@@ -2,6 +2,8 @@
 <!DOCTYPE html>
 <html><head runat="server"><title>Asset Detail</title></head>
 <body>
+
+     <p style="text-align:right;"><a href="~/Logout.aspx" runat="server">Logout</a></p>
 <form id="form1" runat="server">
   <h1>Asset <asp:Literal ID="LitTag" runat="server" /></h1>
   <p>Status: <asp:Literal ID="LitStatus" runat="server" /></p>

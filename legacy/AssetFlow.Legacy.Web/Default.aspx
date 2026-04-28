@@ -5,6 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server"><title>AssetFlow — Assets</title></head>
 <body>
+     <p style="text-align:right;"><a href="~/Logout.aspx" runat="server">Logout</a></p>
 <form id="form1" runat="server">
   <h1>Assets in your department</h1>
   <asp:GridView ID="GridAssets" runat="server" AutoGenerateColumns="false">

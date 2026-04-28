@@ -1,15 +1,15 @@
 ﻿using AssetFlow.Core.Entities;
+using AssetFlow.Core.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
-using System.Linq;
+using Microsoft.Data.SqlClient;
 using System.Threading.Tasks;
-using System.Web;
+
 
 namespace AssetFlow.Legacy.Web.Data
 {
-    public class SqlAssetRepository
+    public class SqlAssetRepository : IAssetRepository
     {
         private readonly String _connStr;
         public SqlAssetRepository(String connStr) => _connStr = connStr;
@@ -17,7 +17,7 @@ namespace AssetFlow.Legacy.Web.Data
         public async Task<IReadOnlyList<Asset>> GetByDepartmentAsync(int departmentId)
         {
             using var conn = new SqlConnection(_connStr);
-            using var cmd = new SqlCommand("`sp_GetAssetsByDepartment`", conn) { CommandType = System.Data.CommandType.StoredProcedure };
+            using var cmd = new SqlCommand("sp_GetAssetsByDepartment", conn) { CommandType = System.Data.CommandType.StoredProcedure };
             cmd.Parameters.AddWithValue("@DepartmentId", departmentId);
             await conn.OpenAsync();
             using var reader = await cmd.ExecuteReaderAsync();

@@ -30,14 +30,19 @@ public partial class Assign : Page
                 LblError.Text = "Asset is not available for assignment.";
                 BtnAssign.Enabled = false;
             }
+
+            var userRepo = WebFormsContainer.Resolve<IUserRepository>();
+            var users = await userRepo.GetAllAsync();
+            DdlUsers.DataSource = users;
+            DdlUsers.DataBind();
         }
     }
 
     protected async void BtnAssign_Click(object sender, EventArgs e)
     {
-        if (!int.TryParse(TxtUserId.Text, out var userId))
+        if (!int.TryParse(DdlUsers.SelectedValue, out var userId))
         {
-            LblError.Text = "User ID must be a number."; return;
+            LblError.Text = "Please select a user."; return;
         }
 
         try
@@ -52,3 +57,4 @@ public partial class Assign : Page
         }
     }
 }
+

@@ -1,12 +1,17 @@
 ﻿using System.Web.Routing;
 
-namespace AssetFlow.Legacy.Web.App_Start;
-
-public static class RouteConfig
+namespace AssetFlow.Legacy.Web.App_Start
 {
-    public static void RegisterRoutes(RouteCollection routes)
+    public static class RouteConfig
     {
-        routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
-        // Friendly URLs are handled by ASP.NET Web Forms routing extensions
+        public static void RegisterRoutes(RouteCollection routes)
+        {
+            // Friendly URL: /assets/{id}  ->  ~/Assets/Detail.aspx
+            // The {id} segment is exposed via Page.RouteData.Values["id"].
+            routes.MapPageRoute(
+                routeName: "AssetDetail",
+                routeUrl: "assets/{id}",
+                physicalFile: "~/Assets/Detail.aspx");
+        }
     }
 }
