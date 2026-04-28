@@ -1,4 +1,3 @@
-```
 # .NET
 [Bb]in/
 [Oo]bj/
@@ -31,9 +30,8 @@ packages/
 .DS_Store
 Thumbs.db
 
-# Logs
-*.log
 
 /2026-04-27-assetflow-migration-demo.md
-```
-/2026-04-27-assetflow-migration-demo.md
+
+# Logs
+*.log

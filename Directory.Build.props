@@ -1,0 +1,9 @@
+```xml
+<Project>
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+</Project>
+```
