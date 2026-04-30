@@ -1,12 +1,9 @@
 # AssetFlow
 
-Two ASP.NET applications, one database, one shared business-logic library. Built to make the migration patterns from my [.NET Framework to modern .NET blog post](https://qurrat2.github.io/2026/04/27/dotnet-framework-to-net8-migration/) inspectable as code rather than abstract claims.
+Two ASP.NET applications, one database, one shared business-logic library. Built to make the migration patterns from my [.NET Framework to modern .NET blog post](https://qurrat2.github.io/2026/04/27/dotnet-framework-to-net8-migration/) 
 
-> **Status:** Work in progress. The legacy side (.NET Framework 4.8 + WebForms + Web API 2) is complete. The modern API side (ASP.NET Core 10 + EF Core + JWT) and the README's full blog-mapping table are next.
+> **Status:** Work in progress. The legacy side (.NET Framework 4.8 + WebForms + Web API 2) is complete. The modern API side (ASP.NET Core 10 + EF Core + JWT) are next.
 
-## Why this exists
-
-Most migration write-ups stay abstract. This repo is the opposite: a tiny working solution where every "before" pattern from the blog post has, or will have, a corresponding "after" pattern, both running against the same SQL Server database. Recruiters and engineers can clone it, build both sides, and read the diffs.
 
 ## Solution layout
 
