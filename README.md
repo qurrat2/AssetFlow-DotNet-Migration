@@ -1,8 +1,8 @@
 # AssetFlow
 
-Two ASP.NET applications, one database, one shared business-logic library. Built to make the migration patterns from my [.NET Framework to modern .NET blog post](https://qurrat2.github.io/2026/04/27/dotnet-framework-to-net8-migration/) 
+Two ASP.NET applications, one database, one shared business-logic library. Built to make the migration patterns from my [.NET Framework to modern .NET blog post](https://qurrat2.github.io/2026/04/27/dotnet-framework-to-net8-migration/) inspectable as code.
 
-> **Status:** Work in progress. The legacy side (.NET Framework 4.8 + WebForms + Web API 2) is complete. The modern API side (ASP.NET Core 10 + EF Core + JWT) are next.
+> **Status:** Work in progress. The legacy side (.NET Framework 4.8 + WebForms + Web API 2) is complete. The modern API (ASP.NET Core 8) is bootstrapped with EF Core repositories and Swagger; JWT auth, controllers, and integration tests are next.
 
 
 ## Solution layout
@@ -11,7 +11,7 @@ Two ASP.NET applications, one database, one shared business-logic library. Built
 AssetFlow/
 ├── shared/AssetFlow.Core/           netstandard2.0 — entities, services, contracts
 ├── legacy/AssetFlow.Legacy.Web/     net48 — WebForms + Web API 2 + Forms auth + ADO.NET
-├── modern/AssetFlow.Api/            net10.0 — Kestrel + JWT + EF Core + Swagger (pending)
+├── modern/AssetFlow.Api/            net8.0 — Kestrel + EF Core + Swagger (JWT/controllers pending)
 ├── database/                        SQL Server schema, stored procs, seed data
 └── tests/                           xUnit (Core unit tests passing; API integration tests pending)
 ```
@@ -24,7 +24,7 @@ AssetFlow/
 
 ## What's coming
 
-- ASP.NET Core 10 API on the modern side (mirrors the legacy domain through EF Core, JWT, middleware, Swagger).
+- JWT auth, request-logging middleware, and controllers on the modern side (matching the legacy domain).
 - Integration tests for the modern endpoints.
 - Full README with a blog-claim → file-path mapping table.
 - Optionally: a YARP gateway demonstrating per-route Strangler Fig migration.
@@ -34,7 +34,7 @@ AssetFlow/
 ### Prerequisites
 
 - Visual Studio 2022 or 2026 with the **ASP.NET and web development** workload (and .NET Framework 4.8 SDK + targeting pack)
-- .NET 10 SDK
+- .NET 8 SDK
 - SQL Server LocalDB (ships with VS) or any SQL Server 2019+
 
 ### Setup

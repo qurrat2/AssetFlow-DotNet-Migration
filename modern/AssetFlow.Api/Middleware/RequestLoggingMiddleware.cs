@@ -2,7 +2,6 @@
 
 namespace AssetFlow.Api.Middleware;
 
-// THIS IS THE BLOG'S "AFTER" — middleware in Program.cs.
 // Compare with legacy Modules/RequestLoggingModule.cs.
 public class RequestLoggingMiddleware
 {
