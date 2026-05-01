@@ -22,4 +22,8 @@
     <ProjectReference Include="..\..\shared\AssetFlow.Core\AssetFlow.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+  </ItemGroup>
+
 </Project>
