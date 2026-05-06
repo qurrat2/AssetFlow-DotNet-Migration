@@ -2,8 +2,7 @@
 
 Two ASP.NET applications, one database, one shared business-logic library. Built to make the migration patterns from my [.NET Framework to modern .NET blog post](https://qurrat2.github.io/2026/04/27/dotnet-framework-to-net8-migration/) inspectable as code.
 
-> **Status:** Work in progress. The legacy side (.NET Framework 4.8 + WebForms + Web API 2) is complete. The modern API (ASP.NET Core 8) is bootstrapped with EF Core repositories and Swagger; JWT auth, controllers, and integration tests are next.
-
+> **Status:** Both apps run end-to-end against the same database. Optional YARP Strangler Fig gateway demo is a possible follow-up.
 
 ## Architecture
 
@@ -28,40 +27,68 @@ Two apps, one shared business-logic library, one database. The `netstandard2.0` 
 
 ## What's working today
 
-- `AssetFlow.Core` (netstandard2.0) referenced by both apps. Pure C# business logic with `IAssetService`, repository interfaces, contracts. Unit-tested.
-- `AssetFlow.Legacy.Web`: WebForms 4.8 app with Login, dashboard, asset detail (with friendly URL via `MapPageRoute`), admin-only assignment flow, logout. Web API 2 controller for JSON. Autofac DI, `IHttpModule`-based request logging, Forms authentication, ADO.NET stored procs via `Microsoft.Data.SqlClient`.
-- Database schema, 5 stored procedures, seeded users + assets + departments.
+- `AssetFlow.Core` (netstandard2.0) — pure C# entities, services, repository interfaces, contracts. Referenced by both apps. Unit-tested.
+- `AssetFlow.Legacy.Web` (net48) — WebForms login, dashboard, asset detail (friendly URL via `MapPageRoute`), admin-only assignment flow, logout. Web API 2 JSON controller. Autofac DI, `IHttpModule` request logging, Forms auth, ADO.NET stored procs via `Microsoft.Data.SqlClient`.
+- `AssetFlow.Api` (net8.0) — ASP.NET Core API mirroring the legacy domain. EF Core repositories on the same Core interfaces, JWT bearer auth, role-based authorization, request-logging middleware, Swagger UI with the Authorize button wired up. Integration tests via `WebApplicationFactory`.
+- Database — schema, 5 stored procs, seeded users, departments, assets.
 
-## What's coming
+## Possible follow-ups
 
-- JWT auth, request-logging middleware, and controllers on the modern side (matching the legacy domain).
-- Integration tests for the modern endpoints.
-- Full README with a blog-claim → file-path mapping table.
-- Optionally: a YARP gateway demonstrating per-route Strangler Fig migration.
+- YARP gateway demonstrating per-route Strangler Fig migration.
 
-## Running the legacy side today
+## Blog claim → code mapping
+
+| Blog topic | Legacy (`net48`) | Modern (`net8.0`) |
+|---|---|---|
+| Process model: IIS-hosted DLL → Kestrel console | `legacy/AssetFlow.Legacy.Web/` (IIS Express) | `modern/AssetFlow.Api/Program.cs` (`dotnet run`) |
+| Configuration | `legacy/AssetFlow.Legacy.Web/Web.config` | `modern/AssetFlow.Api/appsettings.json` |
+| Dependency injection | `App_Start/ContainerConfig.cs` (Autofac) | `Program.cs` (built-in `IServiceCollection`) |
+| Startup composition | `Global.asax.cs` + `App_Start/*.cs` | `Program.cs` (single file) |
+| HTTP pipeline | `Modules/RequestLoggingModule.cs` (`IHttpModule`) | `Middleware/RequestLoggingMiddleware.cs` |
+| Authentication | `Auth/FormsAuthHelper.cs` + `<authentication mode="Forms">` in Web.config | `Auth/JwtTokenService.cs` + `AddJwtBearer` in `Program.cs` |
+| Role-based authorization | `User.IsInRole("Admin")` checks in code-behind | `[Authorize(Roles = "Admin")]` attribute |
+| Data access | `Data/SqlAssetRepository.cs` (ADO.NET + stored procs via `Microsoft.Data.SqlClient`) | `Data/EfAssetRepository.cs` (EF Core 8) |
+| JSON serialization | Newtonsoft.Json (Web API 2 default) | System.Text.Json (ASP.NET Core default) |
+| HTTP API surface | `Controllers/AssetsApiController.cs` (Web API 2, `ApiController`) | `Controllers/AssetsController.cs` (`ControllerBase`) |
+| Pure business logic — ports unchanged | `shared/AssetFlow.Core/Services/AssetService.cs` | *(same file — the punchline)* |
+| UI pages | `Login.aspx`, `Default.aspx`, `Assets/Detail.aspx`, `Assets/Assign.aspx` (WebForms) | *none — would be rewritten as Razor Pages or a JS frontend* |
+
+## Running
 
 ### Prerequisites
 
-- Visual Studio 2022 or 2026 with the **ASP.NET and web development** workload (and .NET Framework 4.8 SDK + targeting pack)
+- Visual Studio 2022 or 2026 with the **ASP.NET and web development** workload (legacy needs the WebForms designer)
+- .NET Framework 4.8 SDK + targeting pack
 - .NET 8 SDK
 - SQL Server LocalDB (ships with VS) or any SQL Server 2019+
 
-### Setup
+### Database setup
 
 ```bash
-# 1. Apply schema, sprocs, and seeds (replace instance name as needed)
 sqlcmd -S "(localdb)\MSSQLLocalDB" -i database/01-schema.sql
 sqlcmd -S "(localdb)\MSSQLLocalDB" -i database/02-sprocs.sql
 sqlcmd -S "(localdb)\MSSQLLocalDB" -i database/03-seeds.sql
-
-# 2. Run the shared library tests to confirm Core is healthy
-dotnet test tests/AssetFlow.Core.Tests
 ```
 
-### Launch the legacy app
+### Tests
 
-Open `AssetFlow.sln` in Visual Studio. Set `AssetFlow.Legacy.Web` as the startup project. Press F5. The browser opens at `https://localhost:44xxx/Login.aspx`.
+```bash
+dotnet test
+```
+
+Runs Core unit tests and modern API integration tests (the latter need the seeded database).
+
+### Legacy app
+
+Open `AssetFlow.sln` in Visual Studio, set `AssetFlow.Legacy.Web` as the startup project, press F5. Browser opens at `https://localhost:44xxx/Login.aspx`.
+
+### Modern API
+
+```powershell
+dotnet run --project modern\AssetFlow.Api --launch-profile https
+```
+
+Swagger UI at `https://localhost:7282/swagger` (port comes from `Properties/launchSettings.json` — adjust if yours differs). Call `POST /api/auth/login` with one of the credentials below, paste the returned token into the **Authorize** dialog, then hit the protected endpoints.
 
 ### Default credentials
 
