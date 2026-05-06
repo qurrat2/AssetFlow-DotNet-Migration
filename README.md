@@ -5,16 +5,26 @@ Two ASP.NET applications, one database, one shared business-logic library. Built
 > **Status:** Work in progress. The legacy side (.NET Framework 4.8 + WebForms + Web API 2) is complete. The modern API (ASP.NET Core 8) is bootstrapped with EF Core repositories and Swagger; JWT auth, controllers, and integration tests are next.
 
 
-## Solution layout
+## Architecture
 
+```mermaid
+flowchart TB
+    subgraph Apps[" "]
+        direction LR
+        Legacy["<b>AssetFlow.Legacy.Web — net48</b><br/>WebForms · Web API 2 · Autofac<br/>IHttpModule · Forms Auth · ADO.NET"]
+        Modern["<b>AssetFlow.Api — net8.0</b><br/>ASP.NET Core · built-in DI<br/>Middleware · JWT · EF Core · Swagger"]
+    end
+
+    Core["<b>AssetFlow.Core — netstandard2.0</b><br/>Entities · Services · Repository interfaces · Contracts"]
+    DB[("SQL Server<br/>schema · 5 sprocs · seeds")]
+
+    Legacy --> Core
+    Modern --> Core
+    Legacy --> DB
+    Modern --> DB
 ```
-AssetFlow/
-├── shared/AssetFlow.Core/           netstandard2.0 — entities, services, contracts
-├── legacy/AssetFlow.Legacy.Web/     net48 — WebForms + Web API 2 + Forms auth + ADO.NET
-├── modern/AssetFlow.Api/            net8.0 — Kestrel + EF Core + Swagger (JWT/controllers pending)
-├── database/                        SQL Server schema, stored procs, seed data
-└── tests/                           xUnit (Core unit tests passing; API integration tests pending)
-```
+
+Two apps, one shared business-logic library, one database. The `netstandard2.0` Core is the punchline — the same `IAssetService` is consumed by both `Default.aspx.cs` and `AssetsController.cs` without modification.
 
 ## What's working today
 
